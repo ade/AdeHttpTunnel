@@ -47,7 +47,7 @@ public class PullHandler implements HttpHandler {
 					System.out.println("Writing response...");
 
 					try {
-						byte[] response = new byte[Protocol.SERVER_PULL_JUNK_FRAME_SIZE];
+						byte[] response = new byte[Protocol.JUNK_FRAME_SIZE];
 						output.writeInt(Protocol.FrameType.JUNK.getValue());
 						output.writeInt(response.length);
 						output.write(response);
