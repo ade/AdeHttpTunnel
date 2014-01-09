@@ -78,4 +78,8 @@ public class MeetingPointSocket {
 	public InfiniteStream getOutputStream() {
 		return outputStream;
 	}
+
+	public boolean isConnected() {
+		return connected;
+	}
 }

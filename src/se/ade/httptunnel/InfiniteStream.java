@@ -1,9 +1,6 @@
 package se.ade.httptunnel;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
 public class InfiniteStream extends InputStream {
 	public ByteArrayOutputStream inputBuffer = new ByteArrayOutputStream();
@@ -74,5 +71,20 @@ public class InfiniteStream extends InputStream {
 		byte[] ret = inputBuffer.toByteArray();
 		inputBuffer.reset();
 		return ret;
+	}
+
+	public synchronized void consumeAvailable(InputStream inputStream) throws IOException {
+		int dataLengthToSend;
+		while((dataLengthToSend = inputStream.available()) > 0) {
+			byte[] data = new byte[dataLengthToSend];
+			int gotBytes = inputStream.read(data);
+
+			if(gotBytes != dataLengthToSend) {
+				throw new RuntimeException("Not implemented");
+			}
+
+			write(data);
+		}
+
 	}
 }
