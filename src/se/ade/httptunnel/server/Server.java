@@ -39,6 +39,7 @@ public class Server {
 		httpServer = HttpServer.create(new InetSocketAddress(port), MAX_QUEUED_INCOMING_CONNECTIONS);
 		httpServer.setExecutor(httpExecutor);
 		httpServer.createContext("/pull", new PullHandler(this));
+		httpServer.createContext("/push", new PushHandler(this));
 		httpServer.start();
 	}
 }

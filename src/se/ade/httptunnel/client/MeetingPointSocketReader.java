@@ -28,7 +28,8 @@ public class MeetingPointSocketReader {
 			DataInputStream input = new DataInputStream(socket.getInputStream());
 
 			System.out.println("Sending request.");
-			out.println("GET /pull?session=" + sessionId + " HTTP/1.1\r\nHost: " + host + "\r\n\r\n");
+			String cacheInvalidator = System.currentTimeMillis() + "";
+			out.println("GET /pull?session=" + sessionId + "&cacheInvalidator=" + cacheInvalidator + " HTTP/1.1\r\nHost: " + host + "\r\n\r\n");
 
 			//Flush headers.
 			boolean foundData = false;

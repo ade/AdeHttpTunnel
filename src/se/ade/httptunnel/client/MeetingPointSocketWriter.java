@@ -25,7 +25,16 @@ public class MeetingPointSocketWriter {
 			DataInputStream input = new DataInputStream(socket.getInputStream());
 
 			System.out.println("Starting push request.");
-			byte[] headers = ("GET /push?session=" + sessionId + " HTTP/1.1\r\nHost: " + host + "\r\n\r\n").getBytes();
+			String cacheInvalidator = System.currentTimeMillis() + "";
+			String newline = "\r\n";
+			byte[] headers = (
+					"PUT /push?session=" + sessionId + "&cacheInvalidator=" + cacheInvalidator + " HTTP/1.1" + newline +
+					"Host: " + host + newline +
+					"Content-Type: application/octet-stream" + newline +
+					"Content-Length: " + Integer.MAX_VALUE + newline +
+					newline
+			).getBytes();
+
 			out.write(headers);
 
 			while (!stop) {
@@ -49,8 +58,20 @@ public class MeetingPointSocketWriter {
 				System.out.println("Upload frame size: " + length);
 				System.out.println("Upload frame type: " + type);
 
-				out.writeInt(type.getValue());
-				out.write(data);
+				try {
+					out.writeInt(type.getValue());
+					out.writeInt(length);
+					out.write(data);
+				} catch (IOException e) {
+					System.out.println("Push socket interrupted.");
+					stop();
+				}
+
+				try {
+					Thread.sleep(Protocol.FRAME_DELAY);
+				} catch (InterruptedException e) {
+					//That's ok
+				}
 			}
 
 			System.out.println("Push process stopped.");

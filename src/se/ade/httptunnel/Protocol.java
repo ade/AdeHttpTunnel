@@ -29,5 +29,5 @@ public class Protocol {
 	}
 
 	public static final int JUNK_FRAME_SIZE = 128;
-	public static final int SERVER_PULL_FRAME_DELAY = 1000;
+	public static final int FRAME_DELAY = 5000;
 }
