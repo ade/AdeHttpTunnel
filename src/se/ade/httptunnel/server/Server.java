@@ -4,10 +4,12 @@ import com.sun.net.httpserver.HttpServer;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.util.HashMap;
 import java.util.concurrent.*;
 
 public class Server {
 	private static final int MAX_QUEUED_INCOMING_CONNECTIONS = 100;
+	private HashMap<String, Session> sessions = new HashMap<String, Session>();
 
 	public ExecutorService httpExecutor = Executors.newCachedThreadPool();
 	private HttpServer httpServer;
@@ -41,5 +43,19 @@ public class Server {
 		httpServer.createContext("/pull", new PullHandler(this));
 		httpServer.createContext("/push", new PushHandler(this));
 		httpServer.start();
+	}
+
+	public Session findOrStartSession(String sessionId) {
+		if(!sessions.containsKey(sessionId)) {
+			return startSession(sessionId);
+		} else {
+			return sessions.get(sessionId);
+		}
+	}
+
+	public Session startSession(String sessionId) {
+		Session session = new Session(sessionId);
+		sessions.put(sessionId, session);
+		return session;
 	}
 }

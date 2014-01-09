@@ -19,33 +19,15 @@ public class PullHandler extends BaseHandler {
 	public void handle(HttpExchange exchange, HashMap<String, String> queryString) throws IOException {
 		boolean sendError = true;
 
-		String session = queryString.get("session");
-		if(session != null) {
+		String sessionId = queryString.get("session");
+		String clientId = queryString.get("clientId");
+		if(sessionId != null) {
 			sendError = false;
-			exchange.sendResponseHeaders(200, Integer.MAX_VALUE);
-			exchange.getResponseHeaders().add("Content-Type", "application/octet-stream");
-			OutputStream responseStream = exchange.getResponseBody();
-			DataOutputStream output = new DataOutputStream(responseStream);
-			boolean open = true;
-			while (open) {
-				System.out.println("Writing response...");
 
-				try {
-					byte[] response = new byte[Protocol.JUNK_FRAME_SIZE];
-					output.writeInt(Protocol.FrameType.JUNK.getValue());
-					output.writeInt(response.length);
-					output.write(response);
-
-					try {
-						Thread.sleep(Protocol.FRAME_DELAY);
-					} catch (InterruptedException e) {
-						//That's ok
-					}
-				} catch (IOException e) {
-					open = false;
-					System.out.println("Pull socket was interrupted.");
-				}
-			}
+			Session session = server.findOrStartSession(sessionId);
+			Puller puller = new Puller(exchange, clientId, session);
+			session.pullers.put(clientId, puller);
+			puller.start();
 		}
 
 		if(sendError) {

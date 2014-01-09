@@ -30,4 +30,5 @@ public class Protocol {
 
 	public static final int JUNK_FRAME_SIZE = 128;
 	public static final int FRAME_DELAY = 5000;
+	public static final int MAX_FRAME_SIZE = 1024 * 1024; //1 mb.
 }

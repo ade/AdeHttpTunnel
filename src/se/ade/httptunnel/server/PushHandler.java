@@ -21,36 +21,15 @@ public class PushHandler extends BaseHandler {
 	public void handle(HttpExchange exchange, HashMap<String, String> queryString) throws IOException {
 		boolean sendError = true;
 
-		String session = queryString.get("session");
-		if(session != null) {
+		String sessionId = queryString.get("session");
+		String clientId = queryString.get("clientId");
+
+		if(sessionId != null) {
 			sendError = false;
-
-			DataInputStream input = new DataInputStream(exchange.getRequestBody());
-
-			boolean read = true;
-			while (read) {
-				Protocol.FrameType type = Protocol.FrameType.parse(input.readInt());
-				int length = input.readInt();
-
-				System.out.println("Incoming push frame size: " + length);
-
-				byte[] data = new byte[length];
-				input.readFully(data);
-
-				switch (type) {
-					case JUNK:
-						System.out.println("Push exchange: Read " + length + " bytes of junk.");
-						break;
-					case DATA:
-						System.out.println("Push exchange: Read " + length + " bytes of data.");
-						break;
-					case END:
-						System.out.println("Reached end of push request.");
-						read = false;
-					default:
-						throw new IOException("Unknown push content type!");
-				}
-			}
+			Session session = server.findOrStartSession(sessionId);
+			Pusher pusher = new Pusher(exchange, clientId, session);
+			session.pushers.put(clientId, pusher);
+			pusher.start();
 		}
 
 		if(sendError) {
