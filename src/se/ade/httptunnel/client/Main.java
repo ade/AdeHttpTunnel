@@ -7,7 +7,7 @@ import java.util.Queue;
 public class Main {
 	private enum Mode {
 		LoopbackServer,
-		ConsoleSocket
+		HelloWorldServer, ConsoleSocket
 	}
 
 	public static void main(String[] argsArray) {
@@ -38,6 +38,9 @@ public class Main {
 				System.exit(0);
 			} else if(option.equalsIgnoreCase("-c")) {
 				mode = Mode.ConsoleSocket;
+			} else if(option.equalsIgnoreCase("-helloworldserver")) {
+				listenPort = Integer.parseInt(args.poll());
+				mode = Mode.HelloWorldServer;
 			} else {
 				throw new RuntimeException("Unrecognized option \"" + option + "\", see -help for info.");
 			}
@@ -53,7 +56,12 @@ public class Main {
 					}
 					break;
 				case ConsoleSocket:
-					ConsoleSocket.start(host, port);
+					System.out.println("Opening a test connection to " + host + ":" + port + "...");
+					new ConsoleSocket(host, port).start();
+					break;
+				case HelloWorldServer:
+					System.out.println("Starting a hello world server on port " + listenPort + ".");
+					new HelloWorldServer(listenPort).start();
 					break;
 			}
 		}

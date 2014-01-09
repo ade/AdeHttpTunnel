@@ -45,7 +45,7 @@ public class Server {
 		httpServer.start();
 	}
 
-	public Session findOrStartSession(String sessionId) {
+	public synchronized Session findOrStartSession(String sessionId) {
 		if(!sessions.containsKey(sessionId)) {
 			return startSession(sessionId);
 		} else {

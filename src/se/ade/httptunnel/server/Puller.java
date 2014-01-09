@@ -30,7 +30,7 @@ public class Puller {
 				writeFrame();
 
 				try {
-					Thread.sleep(Protocol.FRAME_DELAY);
+					Thread.sleep(Protocol.JUNK_FRAME_DELAY);
 				} catch (InterruptedException e) {
 					//That's ok
 				}
@@ -74,6 +74,7 @@ public class Puller {
 	}
 
 	public void close() {
+		System.out.println("Closing puller with clientid " + this.clientId);
 		open = false;
 		session.pullers.remove(this.clientId);
 	}

@@ -53,7 +53,7 @@ public class MeetingPointSocketWriter {
 				writeFrame();
 
 				try {
-					Thread.sleep(Protocol.FRAME_DELAY);
+					Thread.sleep(Protocol.JUNK_FRAME_DELAY);
 				} catch (InterruptedException e) {
 					//That's ok
 				}

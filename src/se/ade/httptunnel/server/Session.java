@@ -4,13 +4,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created with IntelliJ IDEA.
- * User: adrnil
- * Date: 2014-01-09
- * Time: 10:58
- * To change this template use File | Settings | File Templates.
- */
 public class Session {
 	private String sessionId;
 	public HashMap<String, Puller> pullers = new HashMap<String, Puller>();
