@@ -13,22 +13,24 @@ public class MeetingPointSocket {
 	MeetingPointSocketReader reader;
 	MeetingPointSocketWriter writer;
 
-	public MeetingPointSocket(final String host, final int port, final String sessionId) {
+	public MeetingPointSocket(final String host, final int port, final String sessionId, final ProxyConfiguration proxyConfiguration) {
 		reader = new MeetingPointSocketReader(this);
 		writer = new MeetingPointSocketWriter(this);
 
 		executorService.execute(new Runnable() {
 			@Override
 			public void run() {
-				reader.start(host, port, sessionId);
+				reader.start(host, port, sessionId, proxyConfiguration);
 			}
 		});
+
 
 		executorService.execute(new Runnable() {
 			@Override
 			public void run() {
-				writer.start(host, port, sessionId);
+				writer.start(host, port, sessionId, proxyConfiguration);
 			}
 		});
+
 	}
 }

@@ -21,15 +21,21 @@ public class MeetingPointSocketReader {
 		this.socket = socket;
 	}
 
-	public void start(String host, int port, String sessionId) {
+	public void start(String host, int port, String sessionId, ProxyConfiguration proxyConfiguration) {
 		try {
-			Socket socket = new Socket(host, port);
+			Socket socket;
+			if(proxyConfiguration != null) {
+				socket = new Socket(proxyConfiguration.host, proxyConfiguration.port);
+			} else {
+				socket = new Socket(host, port);
+			}
+
 			PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 			DataInputStream input = new DataInputStream(socket.getInputStream());
 
 			System.out.println("Sending request.");
 			String cacheInvalidator = System.currentTimeMillis() + "";
-			out.println("GET /pull?session=" + sessionId + "&cacheInvalidator=" + cacheInvalidator + " HTTP/1.1\r\nHost: " + host + "\r\n\r\n");
+			out.println("GET http://" + host + ":" + port + "/pull?session=" + sessionId + "&cacheInvalidator=" + cacheInvalidator + " HTTP/1.1\r\nHost: " + host + "\r\n\r\n");
 
 			//Flush headers.
 			boolean foundData = false;

@@ -18,9 +18,14 @@ public class MeetingPointSocketWriter {
 		stop = true;
 	}
 
-	public void start(String host, int port, String sessionId) {
+	public void start(String host, int port, String sessionId, ProxyConfiguration proxyConfiguration) {
 		try {
-			Socket socket = new Socket(host, port);
+			Socket socket;
+			if(proxyConfiguration != null) {
+				socket = new Socket(proxyConfiguration.host, proxyConfiguration.port);
+			} else {
+				socket = new Socket(host, port);
+			}
 			DataOutputStream out = new DataOutputStream(socket.getOutputStream());
 			DataInputStream input = new DataInputStream(socket.getInputStream());
 
@@ -28,7 +33,7 @@ public class MeetingPointSocketWriter {
 			String cacheInvalidator = System.currentTimeMillis() + "";
 			String newline = "\r\n";
 			byte[] headers = (
-					"PUT /push?session=" + sessionId + "&cacheInvalidator=" + cacheInvalidator + " HTTP/1.1" + newline +
+					"PUT http://" + host + ":" + port + "/push?session=" + sessionId + "&cacheInvalidator=" + cacheInvalidator + " HTTP/1.1" + newline +
 					"Host: " + host + newline +
 					"Content-Type: application/octet-stream" + newline +
 					"Content-Length: " + Integer.MAX_VALUE + newline +
