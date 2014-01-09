@@ -9,7 +9,7 @@ public class ConsoleClient {
 	ExecutorService executor = Executors.newSingleThreadExecutor();
 
 	public ConsoleClient() {
-		final MeetingPointSocket socket = new MeetingPointSocket(Config.SERVER_HOST, Config.SERVER_PORT, "foo", new ProxyConfiguration("secproxy1.sec.intra", 8181));
+		final MeetingPointSocket socket = new MeetingPointSocket(Config.SERVER_HOST, Config.SERVER_PORT, "foo", null);
 		executor.execute(new Runnable() {
 			@Override
 			public void run() {

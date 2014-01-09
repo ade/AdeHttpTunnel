@@ -1,14 +1,12 @@
 package se.ade.httptunnel.client;
 
 import se.ade.httptunnel.InfiniteStream;
-import se.ade.httptunnel.Protocol;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class MeetingPointSocket {
 	ExecutorService executorService = Executors.newFixedThreadPool(2);
-	ExecutorService ioThread = Executors.newSingleThreadExecutor();
 	MeetingPointSocketReader reader;
 	MeetingPointSocketWriter writer;
 
