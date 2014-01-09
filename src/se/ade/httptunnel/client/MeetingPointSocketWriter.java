@@ -61,11 +61,21 @@ public class MeetingPointSocketWriter {
 
 			System.out.println("Push process stopped.");
 		} catch (Exception e) {
+			System.out.println("Push process encountered an exception: " + e) ;
 			throw new RuntimeException(e);
 		}
 	}
 
 	private void writeFrame() {
+		while(uploadStream == null) {
+			//Wait for init.
+
+			try {
+				Thread.sleep(1);
+			} catch (InterruptedException e) {
+				//Ignore
+			}
+		}
 
 		Protocol.FrameType type;
 		int length;

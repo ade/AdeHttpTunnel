@@ -26,10 +26,10 @@ public class MeetingPointSocketReader {
 				socket = new Socket(host, port);
 			}
 
+			System.out.println("Sending pull request....");
 			PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 			DataInputStream input = new DataInputStream(socket.getInputStream());
 
-			System.out.println("Sending request.");
 			String cacheInvalidator = System.currentTimeMillis() + "";
 			out.println("GET http://" + host + ":" + port + "/pull?session=" + sessionId + "&cacheInvalidator=" + cacheInvalidator + "&clientId=" + clientId + " HTTP/1.1\r\nHost: " + host + "\r\n\r\n");
 
@@ -78,6 +78,7 @@ public class MeetingPointSocketReader {
 
 			System.out.println("Pull reached end.");
 		} catch (IOException e) {
+			System.out.println("Pull process encountered an exception: " + e);
 			open = false;
 			throw new RuntimeException(e);
 		}
