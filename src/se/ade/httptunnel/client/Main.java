@@ -1,5 +1,6 @@
 package se.ade.httptunnel.client;
 
+import se.ade.httptunnel.MultiLog;
 import se.ade.httptunnel.server.Server;
 
 import java.util.ArrayDeque;
@@ -33,7 +34,7 @@ public class Main {
 			} else if (option.equalsIgnoreCase("-s")) {
 				sessionId = args.poll();
 			} else if(option.equalsIgnoreCase("-help")) {
-				System.out.println("-h host:post -l listenport -s sessionid");
+				MultiLog.v("AdeHttpTunnel", "-h host:post -l listenport -s sessionid");
 				System.exit(0);
 			} else if(option.equalsIgnoreCase("-c")) {
 				mode = Mode.ConsoleSocket;
@@ -67,25 +68,25 @@ public class Main {
 			switch (mode) {
 				case LoopbackServer:
 					if(listenPort != null && tunnelHost != null && tunnelPort != null && sessionId != null) {
-						System.out.println("Starting loopback forwarder at local port " + listenPort + " forwarding to meeting point " + tunnelHost + ":" + tunnelPort + " for session id: " + sessionId);
+						MultiLog.v("AdeHttpTunnel", "Starting loopback forwarder at local port " + listenPort + " forwarding to meeting point " + tunnelHost + ":" + tunnelPort + " for session id: " + sessionId);
 
 						new MeetingPointLoopbackServer(listenPort, tunnelHost, tunnelPort, sessionId).start();
 					}
 					break;
 				case ConsoleSocket:
-					System.out.println("Opening a test connection to " + host + ":" + port + "...");
+					MultiLog.v("AdeHttpTunnel", "Opening a test connection to " + host + ":" + port + "...");
 					new ConsoleSocket(host, port).start();
 					break;
 				case HelloWorldServer:
-					System.out.println("Starting a hello world server on port " + listenPort + ".");
+					MultiLog.v("AdeHttpTunnel", "Starting a hello world server on port " + listenPort + ".");
 					new HelloWorldServer(listenPort).start();
 					break;
 				case RemoteService:
-					System.out.println("Opening a remote service connection to " + host + ":" + port + " tunneled to " + tunnelHost + ":" + tunnelPort + " with session id: " + sessionId);
+					MultiLog.v("AdeHttpTunnel", "Opening a remote service connection to " + host + ":" + port + " tunneled to " + tunnelHost + ":" + tunnelPort + " with session id: " + sessionId);
 					new MeetingPointToRemoteServiceClient(host, port, tunnelHost, tunnelPort, sessionId).start();
 					break;
 				case TunnelServer:
-					System.out.println("Starting a tunnel server on port " + tunnelPort);
+					MultiLog.v("AdeHttpTunnel", "Starting a tunnel server on port " + tunnelPort);
 					new Server(tunnelPort).start();
 					break;
 			}

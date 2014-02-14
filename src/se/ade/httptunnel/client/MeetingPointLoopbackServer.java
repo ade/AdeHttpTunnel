@@ -1,6 +1,8 @@
 package se.ade.httptunnel.client;
 
+import se.ade.httptunnel.Config;
 import se.ade.httptunnel.InfiniteStream;
+import se.ade.httptunnel.MultiLog;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -30,19 +32,19 @@ public class MeetingPointLoopbackServer {
 			ServerSocket serverSocket = new ServerSocket(localPort);
 			Socket clientSocket = serverSocket.accept();
 
-			final MeetingPointSocket meetingPointSocket = new MeetingPointSocket(host, remotePort, sessionId, null);
+			final MeetingPointSocket meetingPointSocket = new MeetingPointSocket(host, remotePort, sessionId, Config.PROXY_CONFIG);
 
 		 	executor.execute(new Runnable() {
 				@Override
 				public void run() {
-					System.out.println("Client connected, opening tunnel...");
+					MultiLog.v("AdeHttpTunnel", "Client connected, opening tunnel...");
 					meetingPointSocket.connect();
 				}
 			});
 
 			new MeetingPointToSocketBinder(clientSocket, meetingPointSocket).start();
 
-			System.out.println("Shutting down loopback server.");
+			MultiLog.v("AdeHttpTunnel", "Shutting down loopback server.");
 		} catch(IOException e) {
 			System.exit(0);
 			throw new RuntimeException(e);

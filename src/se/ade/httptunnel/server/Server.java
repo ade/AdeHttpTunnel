@@ -37,12 +37,16 @@ public class Server {
 		}
 	}
 
-	private void start() throws IOException {
-		httpServer = HttpServer.create(new InetSocketAddress(port), MAX_QUEUED_INCOMING_CONNECTIONS);
-		httpServer.setExecutor(httpExecutor);
-		httpServer.createContext("/pull", new PullHandler(this));
-		httpServer.createContext("/push", new PushHandler(this));
-		httpServer.start();
+	public void start() {
+		try {
+			httpServer = HttpServer.create(new InetSocketAddress(port), MAX_QUEUED_INCOMING_CONNECTIONS);
+			httpServer.setExecutor(httpExecutor);
+			httpServer.createContext("/pull", new PullHandler(this));
+			httpServer.createContext("/push", new PushHandler(this));
+			httpServer.start();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	public synchronized Session findOrStartSession(String sessionId) {

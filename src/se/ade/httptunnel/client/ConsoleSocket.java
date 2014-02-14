@@ -1,5 +1,7 @@
 package se.ade.httptunnel.client;
 
+import se.ade.httptunnel.MultiLog;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -21,11 +23,11 @@ public class ConsoleSocket {
 
 	public void start() {
 		try {
-			System.out.println("Connecting");
+			MultiLog.v("AdeHttpTunnel", "Connecting");
 			Socket kkSocket = new Socket(hostName, portNumber);
 			final PrintWriter out = new PrintWriter(kkSocket.getOutputStream(), true);
 			BufferedReader in = new BufferedReader(new InputStreamReader(kkSocket.getInputStream()));
-			System.out.println("Connected");
+			MultiLog.v("AdeHttpTunnel", "Connected");
 
 			executorService.execute(new Runnable() {
 				@Override
@@ -33,7 +35,7 @@ public class ConsoleSocket {
 					while(connected) {
 						String input = System.console().readLine();
 						if(input != null && !input.equals("")) {
-							System.out.println("Sending: " + input);
+							MultiLog.v("AdeHttpTunnel", "Sending: " + input);
 							out.println(input);
 						}
 				}
@@ -41,16 +43,16 @@ public class ConsoleSocket {
 
 			String fromServer;
 			while ((fromServer = in.readLine()) != null) {
-				System.out.println("Server: " + fromServer);
+				MultiLog.v("AdeHttpTunnel", "Server: " + fromServer);
 			}
 		} catch (IOException e) {
 			connected = false;
-			System.out.println("Disconnected with exception");
+			MultiLog.v("AdeHttpTunnel", "Disconnected with exception");
 			throw new RuntimeException(e);
 		}
 
 		connected = false;
-		System.out.println("Disconnected");
+		MultiLog.v("AdeHttpTunnel", "Disconnected");
 	}
 
 }

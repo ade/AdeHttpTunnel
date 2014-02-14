@@ -1,6 +1,7 @@
 package se.ade.httptunnel.client;
 
 import se.ade.httptunnel.InfiniteStream;
+import se.ade.httptunnel.MultiLog;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -68,7 +69,7 @@ public class MeetingPointSocket {
 			}
 		}
 
-		System.out.println("MeetingPointSocket closed");
+		MultiLog.v("AdeHttpTunnel", "MeetingPointSocket closed");
 	}
 
 	public InfiniteStream getInputStream() {

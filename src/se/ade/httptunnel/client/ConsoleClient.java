@@ -1,6 +1,7 @@
 package se.ade.httptunnel.client;
 
 import se.ade.httptunnel.Config;
+import se.ade.httptunnel.MultiLog;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -27,7 +28,7 @@ public class ConsoleClient {
 			}
 			if(socket.getInputStream().available() > 0) {
 				byte[] data = socket.getInputStream().readAll();
-				System.out.println("Have some data: '" + new String(data) + "'");
+				MultiLog.v("AdeHttpTunnel", "Have some data: '" + new String(data) + "'");
 				socket.getOutputStream().write(input.getBytes());
 			}
 		}

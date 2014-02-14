@@ -1,6 +1,7 @@
 package se.ade.httptunnel.client;
 
 import se.ade.httptunnel.InfiniteStream;
+import se.ade.httptunnel.MultiLog;
 import se.ade.httptunnel.Protocol;
 
 import java.io.DataInputStream;
@@ -26,12 +27,15 @@ public class MeetingPointSocketReader {
 				socket = new Socket(host, port);
 			}
 
-			System.out.println("Sending pull request....");
+			MultiLog.v(this, "Sending pull request....");
 			PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 			DataInputStream input = new DataInputStream(socket.getInputStream());
 
 			String cacheInvalidator = System.currentTimeMillis() + "";
-			out.println("GET http://" + host + ":" + port + "/pull?session=" + sessionId + "&cacheInvalidator=" + cacheInvalidator + "&clientId=" + clientId + " HTTP/1.1\r\nHost: " + host + "\r\n\r\n");
+			String command = "GET http://" + host + ":" + port + "/pull?session=" + sessionId + "&cacheInvalidator=" + cacheInvalidator + "&clientId=" + clientId + " HTTP/1.1\r\nHost: " + host + "\r\n\r\n";
+			out.println(command);
+			MultiLog.v(this, "Sending HTTP command:");
+			MultiLog.v(this, command);
 
 			//Flush headers.
 			boolean foundData = false;
@@ -55,30 +59,31 @@ public class MeetingPointSocketReader {
 				Protocol.FrameType type = Protocol.FrameType.parse(input.readInt());
 				int length = input.readInt();
 
-				System.out.println("Pulled frame size: " + length);
+				MultiLog.network(this, "Pull type: " + type);
+				MultiLog.network(this, "Pulled frame size: " + length);
 
 				byte[] data = new byte[length];
 				input.readFully(data);
 
 				switch (type) {
 					case JUNK:
-						System.out.println("Read " + length + " bytes of junk.");
+						MultiLog.network(this, "Read " + length + " bytes of junk.");
 						break;
 					case DATA:
-						System.out.println("Read " + length + " bytes of data.");
+						MultiLog.network(this, "Read " + length + " bytes of data.");
 						readBuffer.write(data);
 						break;
 					case END:
-						System.out.println("Reached end of session.");
+						MultiLog.network(this, "Reached end of session.");
 						open = false;
 					default:
 						throw new IOException("Unknown response type!");
 				}
 			}
 
-			System.out.println("Pull reached end.");
+			MultiLog.v("AdeHttpTunnel", "Pull reached end.");
 		} catch (IOException e) {
-			System.out.println("Pull process encountered an exception: " + e);
+			MultiLog.v("AdeHttpTunnel", "Pull process encountered an exception: " + e);
 			open = false;
 			throw new RuntimeException(e);
 		}

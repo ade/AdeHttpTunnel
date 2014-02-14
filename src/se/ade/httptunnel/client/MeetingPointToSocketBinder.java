@@ -1,6 +1,7 @@
 package se.ade.httptunnel.client;
 
 import se.ade.httptunnel.InfiniteStream;
+import se.ade.httptunnel.MultiLog;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -31,7 +32,7 @@ public class MeetingPointToSocketBinder {
 
 		while(!socket.isClosed() && meetingPointSocket.isConnected()) {
 			if(proxyInput.available() > 0) {
-				System.out.println("Relaying " + proxyInput.available() + " bytes of tunnel received data...");
+				MultiLog.v("AdeHttpTunnel", "Relaying " + proxyInput.available() + " bytes of tunnel received data...");
 				byte[] data = proxyInput.readAll();
 				socketOutput.write(data);
 				socketOutput.flush();

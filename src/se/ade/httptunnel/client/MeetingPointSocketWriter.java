@@ -1,6 +1,7 @@
 package se.ade.httptunnel.client;
 
 import se.ade.httptunnel.InfiniteStream;
+import se.ade.httptunnel.MultiLog;
 import se.ade.httptunnel.Protocol;
 
 import java.io.*;
@@ -21,7 +22,7 @@ public class MeetingPointSocketWriter {
 	}
 
 	public void send(byte[] data) {
-		System.out.println("Writing " + data.length + " bytes for upload..");
+		MultiLog.v("AdeHttpTunnel", "Writing " + data.length + " bytes for upload..");
 		sendBuffer.write(data);
 		writeFrame();
 	}
@@ -36,7 +37,7 @@ public class MeetingPointSocketWriter {
 			}
 			uploadStream = new DataOutputStream(socket.getOutputStream());
 
-			System.out.println("Starting push request.");
+			MultiLog.v("AdeHttpTunnel", "Starting push request.");
 			String cacheInvalidator = System.currentTimeMillis() + "";
 			String newline = "\r\n";
 			byte[] headers = (
@@ -59,9 +60,9 @@ public class MeetingPointSocketWriter {
 				}
 			}
 
-			System.out.println("Push process stopped.");
+			MultiLog.v("AdeHttpTunnel", "Push process stopped.");
 		} catch (Exception e) {
-			System.out.println("Push process encountered an exception: " + e) ;
+			MultiLog.v("AdeHttpTunnel", "Push process encountered an exception: " + e) ;
 			throw new RuntimeException(e);
 		}
 	}
@@ -91,15 +92,15 @@ public class MeetingPointSocketWriter {
 			length = data.length;
 		}
 
-		System.out.println("Upload frame size: " + length);
-		System.out.println("Upload frame type: " + type);
+		MultiLog.network(this, "Upload frame size: " + length);
+		MultiLog.network(this, "Upload frame type: " + type);
 
 		try {
 			uploadStream.writeInt(type.getValue());
 			uploadStream.writeInt(length);
 			uploadStream.write(data);
 		} catch (IOException e) {
-			System.out.println("Push socket interrupted.");
+			MultiLog.v(this, "Push socket interrupted.");
 			stop();
 		}
 

@@ -1,5 +1,7 @@
 package se.ade.httptunnel.client;
 
+import se.ade.httptunnel.MultiLog;
+
 import java.io.*;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
@@ -37,10 +39,10 @@ public class MeetingPointToRemoteServiceClient {
 			new MeetingPointToSocketBinder(localServiceSocket, meetingPointSocket).start();
 
 		} catch (IOException e) {
-			System.out.println("Disconnected with exception");
+			MultiLog.v("AdeHttpTunnel", "Disconnected with exception");
 			throw new RuntimeException(e);
 		}
 
-		System.out.println("Disconnected");
+		MultiLog.v("AdeHttpTunnel", "Disconnected");
 	}
 }
