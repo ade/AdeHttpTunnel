@@ -1,6 +1,5 @@
 package se.ade.httptunnel.server;
 
-import org.json.JSONObject;
 import se.ade.httptunnel.InfiniteStream;
 import se.ade.httptunnel.MultiLog;
 
@@ -9,7 +8,7 @@ import java.io.IOException;
 import java.net.Socket;
 
 
-public class Client {
+public class Peer {
     private Socket socket;
     private DataOutputStream outputStream;
     private DirectReader inputStream;
@@ -18,7 +17,7 @@ public class Client {
     private Session session;
     private InfiniteStream receiveBuffer = new InfiniteStream();
 
-    public Client(DirectServer server, String id, Session session) {
+    public Peer(DirectServer server, String id, Session session) {
         this.server = server;
         this.session = session;
         this.id = id;
@@ -48,7 +47,7 @@ public class Client {
         this.session = session;
     }
 
-    public void onReceive(byte[] message, Client fromClient) {
+    public void onReceive(byte[] message, Peer fromPeer) {
         try {
             if(this.socket.isClosed() || !this.socket.isConnected()) {
                 throw new IOException("Closed");

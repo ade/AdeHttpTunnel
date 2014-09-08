@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class Session {
     private DirectServer server;
-    private HashMap<String, Client> clients = new HashMap<>();
+    private HashMap<String, Peer> clients = new HashMap<>();
     private String sessionId;
 
     public Session(DirectServer server, String sessionId) {
@@ -16,24 +16,24 @@ public class Session {
         this.sessionId = sessionId;
     }
 
-    public Client findClient(String id) {
+    public Peer findClient(String id) {
         if(!clients.containsKey(id)) {
-            clients.put(id, new Client(server, id, this));
+            clients.put(id, new Peer(server, id, this));
         }
         return clients.get(id);
     }
 
-    public void send(Client fromClient, byte[] message) {
-        for(Map.Entry<String, Client> clientEntry : clients.entrySet()) {
-            Client client = clientEntry.getValue();
-            if(client != fromClient) {
-                client.onReceive(message, fromClient);
+    public void send(Peer fromPeer, byte[] message) {
+        for(Map.Entry<String, Peer> clientEntry : clients.entrySet()) {
+            Peer peer = clientEntry.getValue();
+            if(peer != fromPeer) {
+                peer.onReceive(message, fromPeer);
             }
         }
     }
 
     public void updateClients() {
-        for (Map.Entry<String, Client> clientEntry : clients.entrySet()) {
+        for (Map.Entry<String, Peer> clientEntry : clients.entrySet()) {
             clientEntry.getValue().update();
         }
     }

@@ -42,8 +42,8 @@ public class DirectServer {
                 String sessionId = params.getString("sessionId");
                 String clientId = params.getString("clientId");
 
-                Client client = findSession(sessionId).findClient(clientId);
-                client.bindSocket(connectionSocket);
+                Peer peer = findSession(sessionId).findClient(clientId);
+                peer.bindSocket(connectionSocket);
 
 
             }
