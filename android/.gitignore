@@ -1,6 +1,10 @@
 *.class
-*.iml
+
 .idea
 .gradle
+# Package Files #
+*.jar
+*.war
+*.ear
 build/
 local.properties

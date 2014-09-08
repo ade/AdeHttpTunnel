@@ -1,0 +1,19 @@
+apply plugin: 'java'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'com.google.guava', name: 'guava', version: '18.0'
+    compile group: 'org.json', name: 'json', version: '20140107'
+}
+
+sourceCompatibility = 1.7
+version = '1.0'
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'AdeHttpTunnel', 'Implementation-Version': version
+        attributes 'Main-Class': 'se.ade.httptunnel.Main'
+    }
+}
